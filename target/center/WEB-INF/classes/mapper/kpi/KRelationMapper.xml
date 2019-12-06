@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.KRelationMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.KRelation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="k_exam" jdbcType="VARCHAR" property="kExam" />
+    <result column="k_assess" jdbcType="VARCHAR" property="kAssess" />
+    <result column="k_rela_name" jdbcType="VARCHAR" property="kRelaName" />
+    <result column="is_use" jdbcType="VARCHAR" property="isUse" />
+  </resultMap>
+  <select id="selectAllIsUse" resultMap="BaseResultMap">
+    select * from k_relation
+    where is_use="已启用"
+  </select>
+  <insert id="insertNewRelation" parameterType="hashmap" >
+    insert into k_relation(k_exam,k_assess,k_rela_name,is_use)
+    values (#{pickExam},#{pickAssess},#{pickRelaName},#{newUse})
+  </insert>
+  <!--<update id="updateOneRelation" parameterType="hashmap">
+    update k_relation
+    set
+  </update>-->
+  <delete id="deleteOneGroupRelation">
+    delete from k_relation
+    where k_rela_name = #{delName}
+  </delete>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from k_relation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.KRelation">
+    insert into k_relation (id, k_exam, k_assess, 
+      k_reta_name)
+    values (#{id,jdbcType=INTEGER}, #{kExam,jdbcType=VARCHAR}, #{kAssess,jdbcType=VARCHAR}, 
+      #{kRetaName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.KRelation">
+    update k_relation
+    set k_exam = #{kExam,jdbcType=VARCHAR},
+      k_assess = #{kAssess,jdbcType=VARCHAR},
+      k_reta_name = #{kRetaName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, k_exam, k_assess, k_reta_name
+    from k_relation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllRelation" resultMap="BaseResultMap">
+    select  k_exam, k_assess, k_rela_name,is_use
+    from k_relation
+  </select>
+</mapper>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.UserMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.User">
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <id column="u_sid" jdbcType="VARCHAR" property="uSid" />
+    <result column="u_name" jdbcType="VARCHAR" property="uName" />
+    <result column="u_password" jdbcType="VARCHAR" property="uPassword" />
+    <result column="u_status" jdbcType="INTEGER" property="uStatus" />
+    <result column="u_range" jdbcType="INTEGER" property="uRange" />
+    <result column="u_level" jdbcType="INTEGER" property="uLevel" />
+  </resultMap>
+  <resultMap id="BaseResultMapWithG" type="org.ssm.center.pojo.kpi.User">
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <id column="u_sid" jdbcType="VARCHAR" property="uSid" />
+    <result column="u_name" jdbcType="VARCHAR" property="uName" />
+    <result column="u_password" jdbcType="VARCHAR" property="uPassword" />
+    <result column="u_status" jdbcType="INTEGER" property="uStatus" />
+    <result column="u_range" jdbcType="INTEGER" property="uRange" />
+    <result column="u_level" jdbcType="INTEGER" property="uLevel" />
+    <association property="userG" javaType="org.ssm.center.pojo.kpi.UserG">
+      <id property="g_id" column="gId"/>
+      <result column="grade" property="grade"/>
+      <!--<result property="sId" column="s_id"></result>-->
+    </association>
+  </resultMap>
+  <select id="selectOneUserStatus" parameterType="STRING" resultType="INTEGER">
+    select u_status
+    from user
+    where u_sid = #{sId}
+  </select>
+  <select id="selectAllUser" resultMap="BaseResultMap">
+    select *
+    from user
+
+  </select>
+  <select id="selectAllUserWithG" resultMap="BaseResultMapWithG">
+    select * from user left join user_g on user.u_sid = user_g.s_id
+  </select>
+  <select id="selectBatchUser" resultMap="BaseResultMap">
+    select
+    *
+    from user where u_sid in
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+  <select id="selectByUserName" parameterType="STRING" resultType="org.ssm.center.pojo.kpi.User">
+    select *
+    from user
+    where u_sid =#{uId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from user
+    where u_id = #{uId,jdbcType=INTEGER}
+      and u_sid = #{uSid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertNewUser" parameterType="hashmap">
+    insert into user(u_sid,u_name,u_password,u_range,u_level)
+    values (#{sId},#{realName},#{password},#{score},#{level})
+  </insert>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.User">
+    insert into user (u_id, u_sid, u_name, 
+      u_password, u_real_name, u_range, 
+      u_level)
+    values (#{uId,jdbcType=INTEGER}, #{uSid,jdbcType=INTEGER}, #{uName,jdbcType=VARCHAR}, 
+      #{uPassword,jdbcType=VARCHAR}, #{uRealName,jdbcType=VARCHAR}, #{uRange,jdbcType=INTEGER}, 
+      #{uLevel,jdbcType=INTEGER})
+  </insert>
+  <update id="changeUserInformation" parameterType="hashmap">
+    update user
+    <trim prefix="set" suffixOverrides=",">
+      <if test="newScore!=null">
+        u_range = #{newScore},
+      </if>
+      <if test="newLevel!=null">
+        u_level = #{newLevel},
+      </if>
+      <if test="newPassword!=null">
+        u_password =#{newPassword},
+      </if>
+    </trim>
+
+    where u_sid =#{sId}
+  </update>
+  <update id="updatePasswordNormal" parameterType="hashmap">
+    update user
+        set u_password = #{password}
+        where u_sid = #{sId} and u_password=#{oldPassword}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.User">
+    update user
+    set u_name = #{uName,jdbcType=VARCHAR},
+      u_password = #{uPassword,jdbcType=VARCHAR},
+      u_real_name = #{uRealName,jdbcType=VARCHAR},
+      u_range = #{uRange,jdbcType=INTEGER},
+      u_level = #{uLevel,jdbcType=INTEGER}
+    where u_id = #{uId,jdbcType=INTEGER}
+      and u_sid = #{uSid,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    select u_id, u_sid, u_name, u_password, u_real_name, u_range, u_level
+    from user
+    where u_id = #{uId,jdbcType=INTEGER}
+      and u_sid = #{uSid,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select *
+    from user
+  </select>
+  <select id="selectOneUserRange" parameterType="string" resultType="INTEGER">
+    select u_range
+    from user
+    where u_sid =#{uSid}
+  </select>
+  <select id="selectOneUserLevel" parameterType="string" resultType="INTEGER">
+    SELECT u_level
+    from user
+    where u_sid = #{sId}
+  </select>
+  <select id="getAllAssessPerson" parameterType="Integer" resultMap="BaseResultMap">
+    select u_sid,u_name
+    from user
+    where u_level &lt; #{uLevel} and u_status=1
+  </select>
+
+</mapper>

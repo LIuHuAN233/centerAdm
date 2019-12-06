@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.BlogInformationMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.BlogInformation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="create_date" jdbcType="DATE" property="createDate" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="tags" jdbcType="VARCHAR" property="tags" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="about" jdbcType="VARCHAR" property="about" />
+
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from blog_information
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <select id="selectOneBlogById" resultType="org.ssm.center.pojo.kpi.BlogInformation">
+    select * from blog_information
+    where id = #{id}
+    </select>
+    <select id="getNewBlog" resultMap="BaseResultMap">
+    select * from blog_information
+    where create_date>=DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    <!--<choose>
+      <when test="title!=null">
+
+      </when>
+    </choose>-->
+  </select>
+  <insert id="addBlog" parameterType="org.ssm.center.pojo.kpi.BlogInformation">
+    insert into blog_information(
+    title,
+    create_date,create_user,
+    create_name,
+    tags,content,about
+    )values (
+    #{title},
+    #{createDate},#{createUser},
+    #{createName},
+    #{tags},#{content},#{about}
+    )
+  </insert>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.BlogInformation">
+    insert into blog_information (id, title, create_date, 
+      create_user, tags, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{createDate,jdbcType=DATE}, 
+      #{createUser,jdbcType=INTEGER}, #{tags,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.BlogInformation">
+    update blog_information
+    set title = #{title,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=DATE},
+      create_user = #{createUser,jdbcType=INTEGER},
+      tags = #{tags,jdbcType=VARCHAR},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, title, create_date, create_user, tags, content
+    from blog_information
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, title, create_date, create_user, tags, content
+    from blog_information
+  </select>
+</mapper>

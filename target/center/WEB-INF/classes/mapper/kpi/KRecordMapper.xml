@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.KRecordMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.KRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="start_time" jdbcType="DATE" property="startTime" />
+    <result column="end_time" jdbcType="DATE" property="endTime" />
+    <result column="kpi_number" jdbcType="VARCHAR" property="kpiNumber" />
+    <result column="record_status" jdbcType="INTEGER" property="recordStatus" />
+  </resultMap>
+
+  <select id="selectByKpiNumber" parameterType="STRING" resultType="org.ssm.center.pojo.kpi.KRecord">
+    select *
+    from k_record
+    where kpi_number =#{kpiNumber}
+  </select>
+  <select id="selectByStatus" resultType="STRING">
+    select kpi_number
+    from k_record
+    where record_status =1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from k_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertOneRecord" parameterType="hashmap">
+    insert into k_record(start_time,kpi_number)
+    values (#{startTime,jdbcType=DATE},#{kpiNumber,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.KRecord">
+    insert into k_record (id, strat_time, end_time, 
+      kpi_number)
+    values (#{id,jdbcType=INTEGER}, #{stratTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{kpiNumber,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateEndTime" parameterType="hashmap">
+    update k_record
+    set end_time =#{endTime},
+        record_status=0
+    where kpi_number =#{kpiNumber}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.KRecord">
+    update k_record
+    set strat_time = #{stratTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      kpi_number = #{kpiNumber,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, strat_time, end_time, kpi_number
+    from k_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, strat_time, end_time, kpi_number
+    from k_record
+  </select>
+</mapper>

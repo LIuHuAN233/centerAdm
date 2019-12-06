@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.KpiSetMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.KpiSet">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="start" jdbcType="INTEGER" property="start" />
+  </resultMap>
+
+  <select id="checkStatus" resultType="INTEGER" >
+    select start
+    from kpi_set
+  </select>
+  <update id="changeStatus" parameterType="INTEGER">
+    update kpi_set
+    set start = #{start}
+  </update>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from kpi_set
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.KpiSet">
+    insert into kpi_set (id, start)
+    values (#{id,jdbcType=INTEGER}, #{start,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.KpiSet">
+    update kpi_set
+    set start = #{start,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, start
+    from kpi_set
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, start
+    from kpi_set
+  </select>
+</mapper>

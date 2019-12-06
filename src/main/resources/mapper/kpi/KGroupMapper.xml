@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.KGroupMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.KGroup">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="k_group" jdbcType="VARCHAR" property="kGroup" />
+    <result column="k_group_name" jdbcType="VARCHAR" property="kGroupName" />
+    <result column="k_group_id" jdbcType="VARCHAR" property="kGroupId" />
+  </resultMap>
+  <select id="selectAllGroupName" resultMap="BaseResultMap">
+    select k_group_name
+    from k_group
+
+  </select>
+  <select id="selectOneGroup" parameterType="STRING" resultType="org.ssm.center.pojo.kpi.KGroup">
+    select * from k_group
+    where k_group_name = #{kGroupName}
+  </select>
+  <update id="updateGroup" parameterType="hashmap">
+    update k_group
+    set k_group=#{updateGroup},k_group_id =#{updateGroupId}
+    where k_group_name = #{updateGroupName}
+  </update>
+  <delete id="deleteOneGroup" parameterType="string">
+    delete from k_group
+    where k_group_name=#{delName}
+  </delete>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from k_group
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="addNewGroup" parameterType="hashmap">
+    insert into k_group(k_group,k_group_name,k_group_id)
+    values (#{newGroup},#{newGroupName},#{newGroupId})
+  </insert>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.KGroup">
+    insert into k_group (id, k_group, k_group_name
+      )
+    values (#{id,jdbcType=INTEGER}, #{kGroup,jdbcType=VARCHAR}, #{kGroupName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.KGroup">
+    update k_group
+    set k_group = #{kGroup,jdbcType=VARCHAR},
+      k_group_name = #{kGroupName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, k_group, k_group_name
+    from k_group
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllGroup" resultMap="BaseResultMap">
+    select *
+    from k_group
+  </select>
+</mapper>

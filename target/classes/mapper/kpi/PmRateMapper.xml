@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.PmRateMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.PmRate">
+    <id column="r_id" jdbcType="INTEGER" property="rId" />
+    <result column="p_id" jdbcType="INTEGER" property="pId" />
+    <result column="r_date" jdbcType="TIMESTAMP" property="rDate" />
+    <result column="r_name" jdbcType="VARCHAR" property="rName" />
+    <result column="r_file_path" jdbcType="VARCHAR" property="rFilePath" />
+    <result column="r_file_name" jdbcType="VARCHAR" property="rFileName" />
+    <result column="r_rate" jdbcType="LONGVARCHAR" property="rRate" />
+    <result column="r_u_id" jdbcType="VARCHAR" property="ruId" />
+    <result column="r_u_name" jdbcType="VARCHAR" property="ruName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pm_rate
+    where r_id = #{rId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.PmRate">
+    insert into pm_rate ( p_id, r_date,
+      r_name, r_file_path, r_file_name, 
+      r_rate,r_u_id,r_u_name)
+    values ( #{pId,jdbcType=INTEGER}, #{rDate,jdbcType=TIMESTAMP},
+      #{rName,jdbcType=VARCHAR}, #{rFilePath,jdbcType=VARCHAR}, #{rFileName,jdbcType=VARCHAR}, 
+      #{rRate,jdbcType=LONGVARCHAR},#{ruId},#{ruName})
+
+  </insert>
+  <update id="updateOneRate" parameterType="org.ssm.center.pojo.kpi.PmRate">
+    update pm_rate
+    set
+    <trim suffixOverrides="," >
+      <if test='rName!=""'>
+        r_name = #{rName,jdbcType=VARCHAR},
+      </if>
+      <if test='rRate!=""'>
+        r_rate = #{rRate,jdbcType=VARCHAR},
+      </if>
+      <if test="rDate!=null">
+        r_date = #{rDate,jdbcType=VARCHAR},
+      </if>
+      <if test='rFileName!=""'>
+        r_file_name = #{rFileName,jdbcType=VARCHAR},
+      </if>
+      <if test='rFilePath!=""'>
+        r_file_path = #{rFilePath,jdbcType=DATE},
+      </if>
+
+    </trim>
+    where r_id = #{rId,jdbcType=INTEGER}
+  </update>
+  <delete id="deleteOneByRId" >
+    delete from pm_rate
+    where r_id = #{rId}
+  </delete>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.PmRate">
+    update pm_rate
+    set p_id = #{pId,jdbcType=INTEGER},
+      r_date = #{rDate,jdbcType=TIMESTAMP},
+      r_name = #{rName,jdbcType=VARCHAR},
+      r_file_path = #{rFilePath,jdbcType=VARCHAR},
+      r_file_name = #{rFileName,jdbcType=VARCHAR},
+      r_rate = #{rRate,jdbcType=LONGVARCHAR}
+    where r_id = #{rId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select r_id, p_id, r_date, r_name, r_file_path, r_file_name, r_rate
+    from pm_rate
+    where r_id = #{rId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select r_id, p_id, r_date, r_name, r_file_path, r_file_name, r_rate
+    from pm_rate
+  </select>
+</mapper>

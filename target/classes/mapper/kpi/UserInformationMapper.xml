@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.UserInformationMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.UserInformation">
+    <id column="ui_id" jdbcType="INTEGER" property="uiId" />
+    <result column="ui_user" jdbcType="VARCHAR" property="uiUser" />
+    <result column="ui_tel_number" jdbcType="INTEGER" property="uiTelNumber" />
+    <result column="ui_snum" jdbcType="INTEGER" property="uiSnum" />
+    <result column="ui_email" jdbcType="VARCHAR" property="uiEmail" />
+    <result column="ui_sid" jdbcType="INTEGER" property="uiSid" />
+    <result column="ui_register_time" jdbcType="TIMESTAMP" property="uiRegisterTime" />
+    <result column="ui_last_login_ip" jdbcType="VARCHAR" property="uiLastLoginIp" />
+    <result column="ui_last_login_time" jdbcType="TIMESTAMP" property="uiLastLoginTime" />
+    <result column=" ui_college" jdbcType="VARCHAR" property="uiCollege" />
+    <result column="ui_subject" jdbcType="VARCHAR" property="uiSubject" />
+    <result column="ui_teacher" jdbcType="VARCHAR" property="uiTeacher" />
+  </resultMap>
+  <update id="updateOneUser" parameterType="org.ssm.center.pojo.kpi.UserInformation">
+    update user_information
+    set ui_last_login_ip = #{uiLastLoginIp},
+        ui_last_login_time =#{uiLastLoginTime}
+        where ui_sid =#{uiSid}
+  </update>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_information
+    where ui_id = #{uiId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.UserInformation">
+    insert into user_information (ui_id, ui_user, ui_tel_number, 
+      ui_snum, ui_email, ui_sid, 
+      ui_register_time, ui_last_login_ip, ui_last_login_time, 
+      " ui_college", ui_subject, ui_teacher
+      )
+    values (#{uiId,jdbcType=INTEGER}, #{uiUser,jdbcType=VARCHAR}, #{uiTelNumber,jdbcType=INTEGER}, 
+      #{uiSnum,jdbcType=INTEGER}, #{uiEmail,jdbcType=VARCHAR}, #{uiSid,jdbcType=INTEGER}, 
+      #{uiRegisterTime,jdbcType=TIMESTAMP}, #{uiLastLoginIp,jdbcType=VARCHAR}, #{uiLastLoginTime,jdbcType=TIMESTAMP}, 
+      #{uiCollege,jdbcType=VARCHAR}, #{uiSubject,jdbcType=VARCHAR}, #{uiTeacher,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.UserInformation">
+    update user_information
+    set ui_user = #{uiUser,jdbcType=VARCHAR},
+      ui_tel_number = #{uiTelNumber,jdbcType=INTEGER},
+      ui_snum = #{uiSnum,jdbcType=INTEGER},
+      ui_email = #{uiEmail,jdbcType=VARCHAR},
+      ui_sid = #{uiSid,jdbcType=INTEGER},
+      ui_register_time = #{uiRegisterTime,jdbcType=TIMESTAMP},
+      ui_last_login_ip = #{uiLastLoginIp,jdbcType=VARCHAR},
+      ui_last_login_time = #{uiLastLoginTime,jdbcType=TIMESTAMP},
+      " ui_college" = #{uiCollege,jdbcType=VARCHAR},
+      ui_subject = #{uiSubject,jdbcType=VARCHAR},
+      ui_teacher = #{uiTeacher,jdbcType=VARCHAR}
+    where ui_id = #{uiId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select ui_id, ui_user, ui_tel_number, ui_snum, ui_email, ui_sid, ui_register_time, 
+    ui_last_login_ip, ui_last_login_time, " ui_college", ui_subject, ui_teacher
+    from user_information
+    where ui_id = #{uiId,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select ui_id, ui_user, ui_tel_number, ui_snum, ui_email, ui_sid, ui_register_time, 
+    ui_last_login_ip, ui_last_login_time, " ui_college", ui_subject, ui_teacher
+    from user_information
+  </select>
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.KpiMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.Kpi">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="s_id" jdbcType="VARCHAR" property="sId" />
+    <result column="value" jdbcType="FLOAT" property="value" />
+    <result column="update_time" jdbcType="DATE" property="updateTime" />
+    <result column="k_number" jdbcType="VARCHAR" property="kNumber"></result>
+  </resultMap>
+  <resultMap id="BaseResultMap1" type="org.ssm.center.pojo.kpi.Kpi">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="s_id" jdbcType="VARCHAR" property="sId" />
+    <result column="value" jdbcType="FLOAT" property="value" />
+    <result column="update_time" jdbcType="DATE" property="updateTime" />
+    <result column="k_number" jdbcType="VARCHAR" property="kNumber"></result>
+
+    <association property="user" javaType="org.ssm.center.pojo.kpi.User">
+      <id property="id" column="id"/>
+      <result column="u_name" property="uName"/>
+      <!--<result property="sId" column="s_id"></result>-->
+    </association>
+  </resultMap>
+
+  <update id="updateOneKpi" parameterType="hashmap">
+    update kpi
+    set value=#{newKpi}
+    where s_id =#{sId} and k_number = #{kpiNumber}
+  </update>
+  <select id="selectKpiExist" parameterType="STRING" resultMap="BaseResultMap">
+    select *
+    from kpi
+    where k_number =#{kpiNumber}
+  </select>
+  <select id="selectAllKpi" resultMap="BaseResultMap1">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+    order by k.update_time desc
+  </select>
+  <select id="selectKpiOneTime" parameterType="STRING" resultMap="BaseResultMap1">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+    where k.k_number = #{kNumber}
+    order by k.value desc
+  </select>
+  <select id="selectKpiOneUser" parameterType="STRING" resultMap="BaseResultMap1">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+    where s_id=#{sId}
+    order by k.update_time desc
+  </select>
+  <select id="selectKpiOneUserOneTime1" parameterType="hashmap" resultMap="BaseResultMap1">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+    where k.k_number=#{kNumber} and s_id = #{sId}
+    order by k.value desc
+  </select>
+  <select id="selectKpiOneUserOneTime" parameterType="hashmap" resultMap="BaseResultMap1">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+    where update_time=#{kUpdateTime} and k_number = #{kNumber}
+    order by k.value desc
+  </select>
+  <!--<select id="selectOneGroupOneTime" parameterType="hashmap" resultMap="org.ssm.center.pojo.kpi.Kpi">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+  </select>-->
+  <select id="selectOneGroupOneTime" resultMap="BaseResultMap1">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+    where k.k_number=#{kNumber} and k.s_id in
+    <foreach collection="arr" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    order by k.value desc
+  </select>
+  <select id="selectOneGroupAll" resultMap="BaseResultMap1">
+    select k.s_id,k.value,k.update_time,k.k_number,u.u_name from kpi as k left join user as u on k.s_id = u.u_sid
+    where k.s_id in
+    <foreach collection="array" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    order by k.update_time desc
+  </select>
+  <insert id="insertOneKpi" parameterType="org.ssm.center.pojo.kpi.KpiThisTime">
+    insert into kpi(s_id,value,update_time,k_number)
+    values (#{bsId},#{avgValue},#{updateTime},#{kpiNumber})
+  </insert>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from kpi
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.Kpi">
+    insert into kpi (id, s_id, value, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{sId,jdbcType=INTEGER}, #{value,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.Kpi">
+    update kpi
+    set s_id = #{sId,jdbcType=INTEGER},
+      value = #{value,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, s_id, value, update_time
+    from kpi
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, s_id, value, update_time,
+    from kpi
+  </select>
+</mapper>

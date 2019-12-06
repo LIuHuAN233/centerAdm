@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.TagInformationMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.TagInformation">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+    <result column="tag_rqs" jdbcType="VARCHAR" property="tagRqs" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tag_information
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <select id="selectTagById" resultType="org.ssm.center.pojo.kpi.TagInformation">
+    select tag
+    from tag_information
+    where id = #{id}
+  </select>
+  <select id="showAllTag" resultMap="BaseResultMap">
+    select * from tag_information
+  </select>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.TagInformation">
+    insert into tag_information (id, tag, tag_rqs
+      )
+    values (#{id,jdbcType=INTEGER}, #{tag,jdbcType=VARCHAR}, #{tagRqs,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.TagInformation">
+    update tag_information
+    set tag = #{tag,jdbcType=VARCHAR},
+      tag_rqs = #{tagRqs,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, tag, tag_rqs
+    from tag_information
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, tag, tag_rqs
+    from tag_information
+  </select>
+</mapper>

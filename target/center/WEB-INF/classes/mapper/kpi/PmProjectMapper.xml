@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ssm.center.dao.kpi.PmProjectMapper">
+  <resultMap id="BaseResultMap" type="org.ssm.center.pojo.kpi.PmProject">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="p_name" jdbcType="VARCHAR" property="pName" />
+    <result column="p_code" jdbcType="VARCHAR" property="pCode" />
+    <result column="p_user_name" jdbcType="VARCHAR" property="pUserName" />
+    <result column="p_user_id" jdbcType="VARCHAR" property="pUserId" />
+    <result column="p_start_time" jdbcType="DATE" property="pStartTime" />
+    <result column="p_end_time" jdbcType="DATE" property="pEndTime" />
+    <result column="p_file_name" jdbcType="VARCHAR" property="pFileName" />
+    <result column="p_file_path" jdbcType="VARCHAR" property="pFilePath" />
+    <result column="p_father_name" jdbcType="VARCHAR" property="pFatherName" />
+    <result column="p_father_id" jdbcType="INTEGER" property="pFatherId" />
+    <result column="p_status" jdbcType="INTEGER" property="pStatus" />
+    <result column="p_is_finish" jdbcType="INTEGER" property="pIsFinish" />
+    <result column="p_status_time"  property="pStatusTime" />
+    <result column="p_finish_time"  property="pFinishTime" />
+    <result column="p_task_name" jdbcType="VARCHAR" property="pTaskName" />
+    <result column="p_task_code" jdbcType="VARCHAR" property="pTaskCode" />
+    <result column="p_task_begin" jdbcType="VARCHAR" property="pTaskBegin" />
+    <result column="p_task_end" jdbcType="VARCHAR" property="pTaskEnd" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="leader" jdbcType="VARCHAR" property="leader" />
+    <result column="p_level" jdbcType="INTEGER" property="pLevel" />
+  </resultMap>
+  <resultMap id="BaseResultMapLian" type="org.ssm.center.pojo.kpi.PmProject">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="p_name" jdbcType="VARCHAR" property="pName" />
+    <result column="p_code" jdbcType="VARCHAR" property="pCode" />
+    <result column="p_user_name" jdbcType="VARCHAR" property="pUserName" />
+    <result column="p_user_id" jdbcType="VARCHAR" property="pUserId" />
+    <result column="p_start_time" jdbcType="DATE" property="pStartTime" />
+    <result column="p_end_time" jdbcType="DATE" property="pEndTime" />
+    <result column="p_file_name" jdbcType="VARCHAR" property="pFileName" />
+    <result column="p_file_path" jdbcType="VARCHAR" property="pFilePath" />
+    <result column="p_father_name" jdbcType="VARCHAR" property="pFatherName" />
+    <result column="p_father_id" jdbcType="INTEGER" property="pFatherId" />
+    <result column="p_status" jdbcType="INTEGER" property="pStatus" />
+    <result column="p_is_finish" jdbcType="INTEGER" property="pIsFinish" />
+    <result column="p_status_time"  property="pStatusTime" />
+    <result column="p_finish_time"  property="pFinishTime" />
+    <result column="p_task_name" jdbcType="VARCHAR" property="pTaskName" />
+    <result column="p_task_code" jdbcType="VARCHAR" property="pTaskCode" />
+    <result column="p_task_begin" jdbcType="VARCHAR" property="pTaskBegin" />
+    <result column="p_task_end" jdbcType="VARCHAR" property="pTaskEnd" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="leader" jdbcType="VARCHAR" property="leader" />
+    <result column="p_level" jdbcType="INTEGER" property="pLevel" />
+    <collection property="pmRateList" ofType="org.ssm.center.pojo.kpi.PmRate">
+      <id property="rId" column="r_id"/>
+      <result column="p_id" property="pId"/>
+      <result column="r_date" property="rDate"></result>
+      <result column="r_rate" property="rRate"></result>
+      <result column="r_name" property="rName"></result>
+      <result column="r_file_path" property="rFilePath"></result>
+      <result column="r_file_name" property="rFileName"></result>
+      <result column="r_u_id" property="ruId"></result>
+      <result column="r_u_name" property="ruName"></result>
+      <!--<result property="sId" column="s_id"></result>-->
+    </collection>
+  </resultMap>
+  <delete id="deleteOneProject" parameterType="java.lang.Integer">
+    delete from pm_project
+    where id = #{id,jdbcType=INTEGER} or p_father_id = #{id}
+  </delete>
+  <select id="selectAllPmDescByFinalId"  resultMap="BaseResultMapLian">
+    SELECT *  FROM pm_project
+    where
+    id in
+    <foreach collection="list" index="index" item="item" open="(" separator=","  close=")" >
+      #{item}
+    </foreach>
+    order by
+    field(
+    id,
+    <foreach collection="list" index="index" item="item"   separator=","    >
+      #{item}
+    </foreach>
+    )
+  </select>
+  <select id="selectAllFinalFatherId" resultType="INTEGER">
+    select id
+    from pm_project
+    where p_is_finish = #{isFinish} and p_father_id=0
+    order by create_time desc
+  </select>
+  <select id="selectAllPM" resultMap="BaseResultMap">
+    select * from pm_project
+    where p_is_finish=#{isFinish}
+
+  </select>
+  <select id="selectAllPMOneUser" resultMap="BaseResultMapLian">
+    select * from pm_project
+    where p_user_id like #{uId} and p_is_finish =0
+  </select>
+  <select id="selectOnePmWithRate" resultMap="BaseResultMapLian">
+    select * from pm_project  left join pm_rate on pm_project.id = pm_rate.p_id
+    where pm_project.id = #{id}
+  </select>
+  <select id="selectOneSon" resultMap="BaseResultMap">
+    select * from pm_project
+    where p_father_id = #{id}
+  </select>
+  <update id="uploadFile" parameterType="hashmap">
+    update pm_project
+    set p_file_path = #{filePath},
+        p_file_name = #{fileName}
+        where id = #{id}
+  </update>
+  <update id="editFinalFatherStatus">
+    update pm_project
+    set
+    p_status = 0
+    where id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+
+  </update>
+  <update id="editFinishStatus">
+    update pm_project
+    set
+    p_is_finish = 0
+    where id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="finishOneProject">
+    update pm_project
+    set
+    p_status=1
+    where id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="finishOneProjectAll">
+    update pm_project
+    set
+    p_status=1,
+    p_is_finish=1
+    where id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <insert id="insert" parameterType="org.ssm.center.pojo.kpi.PmProject">
+    insert into pm_project (id, p_name, p_code, 
+      p_user_name, p_user_id, p_start_time, 
+      p_end_time, p_file_name, p_file_path,
+      p_father_name,p_father_id,p_task_name,
+      p_task_code,p_task_begin,p_task_end,create_time,leader,p_level
+      )
+    values (#{id,jdbcType=INTEGER}, #{pName,jdbcType=VARCHAR}, #{pCode,jdbcType=VARCHAR}, 
+      #{pUserName,jdbcType=VARCHAR}, #{pUserId,jdbcType=VARCHAR}, #{pStartTime,jdbcType=DATE}, 
+      #{pEndTime,jdbcType=DATE}, #{pFileName,jdbcType=VARCHAR}, #{pFilePath,jdbcType=VARCHAR},
+      #{pFatherName},#{pFatherId},#{pTaskName},#{pTaskCode},#{pTaskBegin},#{pTaskEnd},now(),#{leader},#{pLevel}
+      )
+  </insert>
+  <update id="updateFile" parameterType="org.ssm.center.pojo.kpi.PmProject">
+    update pm_project
+    set
+    p_file_name=#{pFileName},
+    p_file_path=#{pFilePath}
+    where id = #{id}
+  </update>
+  <update id="updateFatherName" parameterType="hashmap">
+    update pm_project
+    set
+    p_father_name = #{pFatherName}
+    where p_father_id =#{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.ssm.center.pojo.kpi.PmProject">
+    update pm_project
+    set
+    <trim suffixOverrides="," >
+      <if test='pName!=""'>
+        p_name = #{pName,jdbcType=VARCHAR},
+      </if>
+      <if test='pCode!=""'>
+        p_code = #{pCode,jdbcType=VARCHAR},
+      </if>
+      <if test='pUserName!=""'>
+        p_user_name = #{pUserName,jdbcType=VARCHAR},
+      </if>
+      <if test='pUserId!=""'>
+        p_user_id = #{pUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="pStartTime!=null">
+        p_start_time = #{pStartTime,jdbcType=DATE},
+      </if>
+      <if test="pEndTime!=null">
+        p_end_time = #{pEndTime,jdbcType=DATE},
+      </if>
+      <if test='pFileName!=""'>
+        p_file_name = #{pFileName,jdbcType=VARCHAR},
+      </if>
+      <if test='pFilePath!=""'>
+        p_file_path = #{pFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test='leader!=""'>
+        leader=#{leader},
+      </if>
+      p_task_name = #{pTaskName},
+      p_task_code = #{pTaskCode},
+      p_task_begin = #{pTaskBegin},
+      p_task_end = #{pTaskEnd},
+    </trim>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="org.ssm.center.pojo.kpi.PmProject">
+    select *
+    from pm_project
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, p_name, p_code, p_user_name, p_user_id, p_start_time, p_end_time, p_file_name, 
+    p_file_path
+    from pm_project
+  </select>
+</mapper>
